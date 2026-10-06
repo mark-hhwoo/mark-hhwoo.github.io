@@ -1,0 +1,487 @@
+:root {
+  color: #333;
+  font-family: "PingFang HK", "PingFang TC", "PingFang SC", "Noto Sans TC", sans-serif;
+  background: #e7ebef;
+}
+
+* { box-sizing: border-box; }
+body { margin: 0; }
+button, p, h1 { font: inherit; }
+button { cursor: pointer; }
+img { display: block; }
+
+.page {
+  min-height: 100vh;
+  padding: 24px 16px 48px;
+}
+
+.demo-bar {
+  width: min(379px, 100%);
+  margin: 0 auto 16px;
+}
+
+.demo-bar > p {
+  margin: 0 0 8px;
+  font-size: 13px;
+  color: #666;
+}
+
+.demo-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.demo-btn {
+  border: 1px solid #d5dbe1;
+  background: #fff;
+  color: #333;
+  border-radius: 999px;
+  padding: 6px 12px;
+  font-size: 12px;
+  line-height: 16px;
+}
+
+.demo-btn.active {
+  background: #009440;
+  border-color: #009440;
+  color: #fff;
+}
+
+.notice {
+  min-height: 18px;
+}
+
+.stage {
+  width: min(379px, 100%);
+  margin: 0 auto;
+}
+
+.hidden-state {
+  background: #f3f5f7;
+  border-radius: 16px;
+  padding: 28px 16px;
+  text-align: center;
+  color: #959799;
+  font-size: 14px;
+}
+
+.hot-leagues {
+  background: #f3f5f7;
+  border-radius: 16px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.hot-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 4px 0;
+}
+
+.hot-header h1 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+  line-height: 22px;
+  color: #333;
+}
+
+.count-btn {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  border: 0;
+  background: #fff;
+  color: #959799;
+  border-radius: 20px;
+  padding: 2px 2px 2px 8px;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 16px;
+}
+
+.count-btn img { width: 20px; height: 20px; }
+
+.icon-rail {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  height: 48px;
+  padding: 6px 8px;
+  overflow-x: auto;
+  background: rgba(255, 255, 255, 0.58);
+  backdrop-filter: blur(16px) saturate(160%);
+  -webkit-backdrop-filter: blur(16px) saturate(160%);
+  border: 1px solid rgba(255, 255, 255, 0.72);
+  border-radius: 12px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.06);
+  scrollbar-width: none;
+}
+
+.sport-indicator {
+  position: absolute;
+  top: 6px;
+  left: 8px;
+  width: 36px;
+  height: 36px;
+  border-radius: 50px;
+  background: #009440;
+  z-index: 0;
+  transition: transform 320ms cubic-bezier(0.22, 0.8, 0.24, 1);
+  pointer-events: none;
+}
+
+.icon-rail::-webkit-scrollbar { display: none; }
+
+.sport-btn {
+  position: relative;
+  z-index: 1;
+  flex: 0 0 auto;
+  width: 36px;
+  height: 36px;
+  padding: 6px;
+  border: 0;
+  border-radius: 50px;
+  background: transparent;
+}
+
+.sport-btn img {
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+}
+
+.sport-btn.selected img {
+  animation: icon-pop 280ms ease;
+}
+
+@keyframes icon-pop {
+  0% { transform: scale(0.82); }
+  65% { transform: scale(1.08); }
+  100% { transform: scale(1); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sport-indicator { transition: none; }
+  .sport-btn.selected img { animation: none; }
+}
+
+.quad-icon {
+  width: 24px;
+  height: 24px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1px;
+}
+
+.quad-icon img { width: 100%; height: 100%; object-fit: cover; }
+
+.feed {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.item-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.item-tag.item-tag-regular { display: none; }
+
+.item-tag {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  width: 100%;
+  margin: 0 0 -20px;
+  padding: 8px 4px 16px 12px;
+  border-radius: 12px 12px 0 0;
+  position: relative;
+  z-index: 2;
+  background: rgba(255, 255, 255, 0.62);
+  backdrop-filter: blur(16px) saturate(160%);
+  -webkit-backdrop-filter: blur(16px) saturate(160%);
+  box-shadow:
+    0 1px 8px rgba(0, 0, 0, 0.12),
+    inset 1px 1px 0 rgba(255, 255, 255, 0.8),
+    inset -1px -1px 0 rgba(255, 255, 255, 0.8),
+    inset 2px 2px 2px rgba(255, 255, 255, 0.5);
+}
+
+.item-tag-esports + .match-card,
+.item-tag-esports-sports + .match-card {
+  padding-top: 14px;
+}
+
+.v-rule,
+.wide-tools { display: none; }
+
+.item-tag img {
+  width: 16px;
+  height: 16px;
+  object-fit: contain;
+}
+
+.item-tag-esports img {
+  border-radius: 7.273px;
+  object-fit: cover;
+}
+
+.item-tag span {
+  font-size: 12px;
+  line-height: 16px;
+  font-weight: 400;
+  color: #959799;
+  white-space: nowrap;
+}
+
+.match-card {
+  background: #fff;
+  border-radius: 12px;
+  padding: 10px 8px 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.card-league {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  min-height: 16px;
+  padding: 0 4px;
+}
+
+.card-league img {
+  width: 16px;
+  height: 16px;
+  object-fit: contain;
+}
+
+.card-league span {
+  font-size: 12px;
+  line-height: 16px;
+  color: #666;
+  white-space: nowrap;
+}
+
+.card-main {
+  display: grid;
+  grid-template-columns: 40px minmax(0, 1fr) auto auto;
+  column-gap: 8px;
+  align-items: center;
+  padding: 0 4px;
+}
+
+.match-clock {
+  font-size: 12px;
+  line-height: 16px;
+  color: #333;
+}
+
+.team-col { min-width: 0; }
+.team-col p {
+  margin: 0;
+  height: 22px;
+  font-size: 14px;
+  line-height: 22px;
+  color: #333;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.score-col {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  min-width: 12px;
+}
+
+.score {
+  height: 22px;
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 22px;
+  color: #333;
+}
+
+.score.leading { color: #009440; }
+
+.card-side {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 52px;
+  justify-content: flex-end;
+}
+
+.market-count {
+  color: #959799;
+  font-size: 12px;
+  line-height: 16px;
+}
+
+.play-btn {
+  width: 24px;
+  height: 24px;
+  display: grid;
+}
+
+.odds {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 4px;
+}
+
+.odds-btn {
+  border: 0;
+  background: #f3f5f7;
+  border-radius: 8px;
+  min-height: 36px;
+  padding: 8px 10px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.odds-btn span {
+  color: #959799;
+  font-size: 14px;
+  line-height: 18px;
+}
+
+.odds-btn strong {
+  color: #333;
+  font-size: 14px;
+  line-height: 18px;
+  font-weight: 600;
+}
+
+.divider {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 4px 8px;
+  color: #959799;
+  font-size: 12px;
+  line-height: 16px;
+}
+.divider span { white-space: nowrap; }
+.divider i { flex: 1; height: 1px; background: #e1e4e8; }
+
+@media (min-width: 600px) {
+  .demo-bar,
+  .stage { width: min(600px, 100%); }
+
+  .hot-leagues { padding: 8px; }
+
+  .item-tag.item-tag-regular { display: flex; }
+
+  .item-tag + .match-card { padding-top: 14px; }
+
+  .card-league { display: none; }
+
+  .match-card { padding: 8px; }
+
+  .card-main {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 0;
+  }
+
+  .v-rule {
+    display: block;
+    flex: none;
+    width: 1px;
+    height: 36px;
+    background: #e6e8eb;
+  }
+
+  .match-clock { flex: none; }
+
+  .team-col { flex: 1; min-width: 0; }
+  .team-col p {
+    height: 16px;
+    font-size: 12px;
+    line-height: 16px;
+  }
+
+  .score-col { gap: 4px; flex: none; }
+  .score {
+    height: 18px;
+    font-size: 14px;
+    line-height: 18px;
+  }
+
+  .card-side { gap: 8px; min-width: 0; }
+
+  .play-btn { display: none; }
+
+  .wide-tools {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .play-wide {
+    position: relative;
+    width: 28px;
+    height: 20px;
+    border-radius: 2px;
+    overflow: hidden;
+    flex: none;
+    background: #333;
+  }
+
+  .play-thumb {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0.8;
+  }
+
+  .play-glyph {
+    position: absolute;
+    left: 8px;
+    top: 4px;
+  }
+
+  .tool-share-wrap {
+    width: 28px;
+    height: 28px;
+    display: grid;
+    place-items: center;
+    flex: none;
+  }
+
+  .market-count {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    width: 36px;
+    height: 28px;
+    border: 1px solid #f3f5f7;
+    border-radius: 8px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .demo-bar,
+  .stage { width: min(993px, 100%); }
+
+  .hot-leagues { padding: 8px; }
+}
