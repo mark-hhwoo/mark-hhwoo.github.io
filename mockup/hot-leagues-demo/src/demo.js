@@ -211,6 +211,7 @@ function render() {
   document.title = `${strings.title} Demo`;
   root.replaceChildren();
   const page = el("main", "page");
+  page.append(el("p", "disclaimer", strings.disclaimer));
   const bar = el("div", "demo-bar");
   bar.append(el("p", "", strings.intro));
   const languages = el("div", "demo-row");

@@ -12,7 +12,17 @@ img { display: block; }
 
 .page {
   min-height: 100vh;
-  padding: 24px 16px 48px;
+  padding: 0 16px 48px;
+}
+
+.disclaimer {
+  margin: 0 -16px 16px;
+  padding: 12px 16px;
+  background: #fff;
+  color: #666;
+  font-size: 12px;
+  line-height: 18px;
+  text-align: center;
 }
 
 .demo-bar {

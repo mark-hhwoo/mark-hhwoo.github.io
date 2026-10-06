@@ -7,6 +7,7 @@ const ui = {
   "zh-Hans": {
     title: "热门联赛",
     language: "语言",
+    disclaimer: "本頁面透過 AI 技術生成之原型模擬畫面（Mockup），僅作為概念與佈局之參考展示。所有實際介面設計、視覺規範、互動邏輯及業務功能，請務必以最終定稿之 Figma 設計圖檔與需求文檔為準。",
     intro: "阶段 1 Demo · 只含热门联赛区块",
     hidden: "热门联赛区已隐藏",
     divider: "以下可能是你感兴趣的其他联赛",
@@ -34,6 +35,7 @@ const ui = {
   vi: {
     title: "Giải đấu hot",
     language: "Ngôn ngữ",
+    disclaimer: "Trang này là màn hình mô phỏng nguyên mẫu (Mockup) được tạo bằng công nghệ AI, chỉ để tham khảo khái niệm và bố cục. Mọi thiết kế giao diện, quy chuẩn hình ảnh, logic tương tác và chức năng nghiệp vụ thực tế phải lấy bản Figma đã chốt cùng tài liệu yêu cầu cuối cùng làm chuẩn.",
     intro: "Giai đoạn 1 Demo · Chỉ gồm khối giải đấu hot",
     hidden: "Đã ẩn khối giải đấu hot",
     divider: "Dưới đây có thể là các giải đấu khác mà bạn quan tâm",
