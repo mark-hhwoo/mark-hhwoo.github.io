@@ -1,22 +1,25 @@
 import { buildHotLeagueFeed, countAllMatches, visibleSports } from "./data/buildFeed.js";
+import { copy, locales, translate } from "./data/i18n.js";
 import { PREFERRED_SPORT_ID, catalogFor, scenarioOptions } from "./data/mock.js";
 
 const STRIDE = 52;
 
-const scenarioNotices = {
-  full: "第一联赛已满 8 场，不跨联赛递补，没有分隔线。",
-  backfill: "英超不足 8 场，由西甲、巴甲递补。分隔线只在第一与第二联赛之间。",
-  short: "合计不足 8 场，仍保留跨联赛分隔线。",
-  empty: "没有赛事且 OPS 关闭，热门联赛区已隐藏。",
-  preferred: "偏好球种为篮球，已排到 Icon 列第一位。右侧数字进入该球种联赛列表。",
-};
-
 const state = {
+  locale: "zh-Hans",
   scenario: "backfill",
   selectedSportId: "football",
-  notice: scenarioNotices.backfill,
+  notice: { id: "backfill" },
   indicatorX: 0,
 };
+
+function text(value) {
+  return translate(state.locale, value);
+}
+
+function noticeText() {
+  const message = copy(state.locale).notice[state.notice.id];
+  return typeof message === "function" ? message(text(state.notice.sport ?? "")) : message;
+}
 
 const root = document.querySelector("#root");
 
@@ -38,7 +41,13 @@ function matchCard(match, league) {
 
   if (league) {
     const head = el("div", "card-league");
-    head.innerHTML = `<img src="${league.icon}" alt="" /><span>${league.name}</span>`;
+    const icon = el("img");
+    icon.src = league.icon;
+    icon.alt = "";
+    const leagueName = text(league.name);
+    const label = el("span", "", leagueName);
+    label.title = leagueName;
+    head.append(icon, label);
     card.append(head);
   }
 
@@ -46,7 +55,12 @@ function matchCard(match, league) {
   main.append(el("time", "match-clock", match.clock));
 
   const names = el("div", "team-col");
-  names.append(el("p", "", match.home), el("p", "", match.away));
+  for (const team of [match.home, match.away]) {
+    const name = text(team);
+    const line = el("p", "", name);
+    line.title = name;
+    names.append(line);
+  }
 
   const scores = el("div", "score-col");
   if (live) {
@@ -60,7 +74,7 @@ function matchCard(match, league) {
   const tools = el("div", "wide-tools");
   if (live) {
     const playWide = el("span", "play-wide");
-    playWide.setAttribute("aria-label", "直播");
+    playWide.setAttribute("aria-label", copy(state.locale).live);
     playWide.innerHTML = `<img class="play-thumb" src="assets/play-thumb.png" alt="" /><img class="play-glyph" src="assets/play-icon.svg" alt="" />`;
     tools.append(playWide);
   }
@@ -69,7 +83,7 @@ function matchCard(match, league) {
   side.append(el("span", "market-count", String(match.marketCount)));
   if (live) {
     const play = el("span", "play-btn");
-    play.setAttribute("aria-label", "直播");
+    play.setAttribute("aria-label", copy(state.locale).live);
     play.innerHTML = `<svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true"><circle cx="12" cy="12" r="12" fill="#009440"/><path d="M9.5 7.5v9l8-4.5-8-4.5z" fill="#fff"/></svg>`;
     side.append(play);
   }
@@ -91,23 +105,24 @@ function matchCard(match, league) {
 
 function renderSection(catalog, sports, activeSport) {
   const section = el("section", "hot-leagues");
-  section.setAttribute("aria-label", "热门联赛");
+  const strings = copy(state.locale);
+  section.setAttribute("aria-label", strings.title);
   const header = el("header", "hot-header");
-  header.append(el("h1", "", "热门联赛"));
+  header.append(el("h1", "", strings.title));
   const count = el("button", "count-btn");
   count.type = "button";
   count.append(el("span", "", String(countAllMatches(catalog))));
   count.insertAdjacentHTML("beforeend", `<img src="assets/arrow.svg" alt="" />`);
   count.addEventListener("click", () => {
     const sport = sports[0];
-    state.notice = `Demo：进入${sport?.name ?? ""}联赛列表。`;
+    state.notice = { id: "enter", sport: sport?.name ?? "" };
     render();
   });
   header.append(count);
 
   const rail = el("div", "icon-rail");
   rail.setAttribute("role", "tablist");
-  rail.setAttribute("aria-label", "球种");
+  rail.setAttribute("aria-label", strings.sportsLabel);
   const selectedIndex = Math.max(0, sports.findIndex((sport) => sport.id === activeSport));
   const indicator = el("span", "sport-indicator");
   indicator.style.transform = `translateX(${state.indicatorX}px)`;
@@ -118,17 +133,17 @@ function renderSection(catalog, sports, activeSport) {
     button.type = "button";
     button.setAttribute("role", "tab");
     button.setAttribute("aria-selected", String(selected));
-    button.setAttribute("aria-label", sport.name);
+    button.setAttribute("aria-label", text(sport.name));
     button.innerHTML = `<img src="${sport.icon}" alt="" />`;
     button.addEventListener("click", () => {
       if (state.selectedSportId === sport.id) return;
       state.selectedSportId = sport.id;
       if (sport.kind === "esports") {
-        state.notice = "电子竞技显示游戏项目标签，例如英雄联盟，项目之间没有分隔线。";
+        state.notice = { id: "esports" };
       } else if (sport.kind === "esports-sports") {
-        state.notice = "电竞体育显示项目标签，例如电竞足球，项目之间没有分隔线。";
+        state.notice = { id: "esportsSports" };
       } else {
-        state.notice = `已切换到${sport.name}的热门赛事。`;
+        state.notice = { id: "switched", sport: sport.name };
       }
       render();
     });
@@ -151,7 +166,7 @@ function renderSection(catalog, sports, activeSport) {
     if (item.type === "divider") {
       group = null;
       const divider = el("div", "divider");
-      divider.innerHTML = `<i></i><span>以下可能是你感兴趣的其他联赛</span><i></i>`;
+      divider.innerHTML = `<i></i><span title="${strings.divider}">${strings.divider}</span><i></i>`;
       feed.append(divider);
       return;
     }
@@ -164,7 +179,13 @@ function renderSection(catalog, sports, activeSport) {
     if (pendingLeague) {
       group = el("div", "item-group");
       const tag = el("div", `item-tag item-tag-${pendingLeague.variant}`);
-      tag.innerHTML = `<img src="${pendingLeague.icon}" alt="" /><span>${pendingLeague.name}</span>`;
+      const leagueName = text(pendingLeague.name);
+      const icon = el("img");
+      icon.src = pendingLeague.icon;
+      icon.alt = "";
+      const label = el("span", "", leagueName);
+      label.title = leagueName;
+      tag.append(icon, label);
       group.append(tag);
       feed.append(group);
     }
@@ -185,28 +206,45 @@ function render() {
   const sports = visibleSports(catalog, preferredSportId);
   const activeSport = sports.some((sport) => sport.id === state.selectedSportId) ? state.selectedSportId : (sports[0]?.id ?? null);
 
+  const strings = copy(state.locale);
+  document.documentElement.lang = state.locale;
+  document.title = `${strings.title} Demo`;
   root.replaceChildren();
   const page = el("main", "page");
   const bar = el("div", "demo-bar");
-  bar.append(el("p", "", "阶段 1 Demo · 只含热门联赛区块"));
+  bar.append(el("p", "", strings.intro));
+  const languages = el("div", "demo-row");
+  languages.setAttribute("role", "group");
+  languages.setAttribute("aria-label", strings.language);
+  for (const locale of locales) {
+    const button = el("button", state.locale === locale.id ? "demo-btn active" : "demo-btn", locale.label);
+    button.type = "button";
+    button.setAttribute("aria-pressed", String(state.locale === locale.id));
+    button.addEventListener("click", () => {
+      if (state.locale === locale.id) return;
+      state.locale = locale.id;
+      render();
+    });
+    languages.append(button);
+  }
   const row = el("div", "demo-row");
   for (const option of scenarioOptions) {
-    const button = el("button", state.scenario === option.id ? "demo-btn active" : "demo-btn", option.label);
+    const button = el("button", state.scenario === option.id ? "demo-btn active" : "demo-btn", strings.scenario[option.id]);
     button.type = "button";
     button.addEventListener("click", () => {
       state.scenario = option.id;
       state.selectedSportId = option.id === "preferred" ? PREFERRED_SPORT_ID : "football";
       state.indicatorX = 0;
-      state.notice = scenarioNotices[option.id];
+      state.notice = { id: option.id };
       render();
     });
     row.append(button);
   }
-  bar.append(row, el("p", "notice", state.notice));
+  bar.append(languages, row, el("p", "notice", noticeText()));
 
   const stage = el("div", "stage");
   if (opsOn && activeSport) stage.append(renderSection(catalog, sports, activeSport));
-  else stage.append(el("div", "hidden-state", "热门联赛区已隐藏"));
+  else stage.append(el("div", "hidden-state", strings.hidden));
 
   page.append(bar, stage);
   root.append(page);
